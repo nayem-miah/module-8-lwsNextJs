@@ -1,5 +1,3 @@
-
-
-export default function DefaultMordal() {
-  return null
+export default function DefaultModal() {
+    return null;
 }
