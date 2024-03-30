@@ -1,5 +1,7 @@
 import comments from "@/app/comments/data"
 
+
+
 export async function GET(request, {params}){
   
     const commentId = params.id
@@ -7,11 +9,9 @@ export async function GET(request, {params}){
     return Response.json(comment)
 }
 
-
 export async function PATCH(request, {params}){
 
     const comment = await request.json();
-  
     const commentId = params.id
     const commentIndex = comments.findIndex((commnet)=> commnet.id === parseInt(commentId))
     comments[commentIndex].text = comment.text 
