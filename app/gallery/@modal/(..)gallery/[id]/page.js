@@ -3,6 +3,7 @@ import photos from "@/app/gallery/images";
 import Image from "next/image";
 
 export default function PhotoPage({ params }) {
+
     const { id } = params;
     const photo = photos.find((p) => p.id === id);
 
@@ -17,9 +18,9 @@ export default function PhotoPage({ params }) {
                 <Image
                     alt={photo.name}
                     src={photo.src}
-                    className="w-full object-cover aspect-square "
+                    className="w-full object-cover aspect-square"
                 />
             </div>
-        </Modal>
+         </Modal>
     );
 }
