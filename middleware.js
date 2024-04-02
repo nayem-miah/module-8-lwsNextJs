@@ -1,30 +1,42 @@
-import { NextResponse } from 'next/server'
- 
-// // redirect------------------------------------------------
-// // This function can be marked `async` if using `await` inside
-// export function middleware(request) {
-
-//     console.log('Hello Im from midddleware')
-//   return NextResponse.redirect( new URL('/', request.url))
-// }
- 
-// // if path is '/profile' or '/about' then redirect to '/'
-// export const config = {
-//   matcher: ['/profile', '/about']
-// }
+import { NextResponse } from "next/server";
+import { match } from '@formatjs/intl-localematcher'
+import Negotiator from 'negotiator'
 
 
+let defaultLocale = 'en'
+let locales = ['en', 'bn']
 
 
-// rewrite------------------------------------------------
-// This function can be marked `async` if using `await` inside
+function getLocale(request) {
+    const acceptedLanguage = request.headers.get("accept-language") ?? undefined
+    const headers = { 'accept-language': acceptedLanguage }
+    const languages = new Negotiator({ headers }).languages()
+    return match(languages, locales, defaultLocale) // en or bn
+}
+
+
 export function middleware(request) {
+    // get the pathname from request url
+    const pathname = request.nextUrl.pathname;
+    console.log(pathname)
 
-    console.log('Hello Im from midddleware')
-  return NextResponse.rewrite( new URL('/', request.url))
+    const pathNameIsMissingLocale = locales.every(
+        (locale) =>
+            !pathname.startsWith(`/${locale}`) &&
+            !pathname.startsWith(`/${locale}/`)
+    );
+
+    if (pathNameIsMissingLocale) {
+        // detect user's preference & redirect with a locale with a path eg: /en/about
+        const locale = getLocale(request);
+
+        return NextResponse.redirect(
+            new URL(`/${locale}/${pathname}`, request.url)
+        );
+    }
+
+    return NextResponse.next();
 }
- 
-// if path is '/profile' or '/about' then redirect to '/'
 export const config = {
-  matcher: ['/profile', '/about']
-}
+    matcher: ["/((?!_next).*)"],
+};
