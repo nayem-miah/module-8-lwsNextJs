@@ -18,7 +18,6 @@ function getLocale(request) {
 export function middleware(request) {
     // get the pathname from request url
     const pathname = request.nextUrl.pathname;
-    console.log(pathname)
 
     const pathNameIsMissingLocale = locales.every(
         (locale) =>
